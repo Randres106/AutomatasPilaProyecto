@@ -35,6 +35,8 @@ namespace AutomatasPilaProyecto
             this.label2 = new System.Windows.Forms.Label();
             this.TbArchivo = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button1
@@ -79,7 +81,7 @@ namespace AutomatasPilaProyecto
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(107, 455);
+            this.button2.Location = new System.Drawing.Point(877, 85);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(112, 34);
             this.button2.TabIndex = 5;
@@ -87,11 +89,29 @@ namespace AutomatasPilaProyecto
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(576, 85);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(295, 31);
+            this.textBox1.TabIndex = 6;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(417, 90);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(136, 25);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Insertar cadena:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(437, 522);
+            this.ClientSize = new System.Drawing.Size(1023, 532);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.TbArchivo);
             this.Controls.Add(this.label2);
@@ -112,6 +132,8 @@ namespace AutomatasPilaProyecto
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox TbArchivo;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label3;
     }
 }
 
