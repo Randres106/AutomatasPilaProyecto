@@ -71,7 +71,7 @@ namespace AutomatasPilaProyecto
             // 
             // TbArchivo
             // 
-            this.TbArchivo.Location = new System.Drawing.Point(12, 104);
+            this.TbArchivo.Location = new System.Drawing.Point(12, 87);
             this.TbArchivo.Multiline = true;
             this.TbArchivo.Name = "TbArchivo";
             this.TbArchivo.Size = new System.Drawing.Size(336, 341);
@@ -79,7 +79,7 @@ namespace AutomatasPilaProyecto
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(107, 462);
+            this.button2.Location = new System.Drawing.Point(107, 455);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(112, 34);
             this.button2.TabIndex = 5;
@@ -91,7 +91,7 @@ namespace AutomatasPilaProyecto
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(951, 522);
+            this.ClientSize = new System.Drawing.Size(437, 522);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.TbArchivo);
             this.Controls.Add(this.label2);
