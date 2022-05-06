@@ -88,14 +88,14 @@ namespace AutomatasPilaProyecto
                     Nodos Resultante = ReglasAceptadas.Find(x => x.Lectura.Contains(Aux));
                     if (Resultante != null)
                     {
-                        if (Resultante.Apila != "")
+                        if (Resultante.Apila != " ")
                         {
                             Pila.Push(Resultante.Apila);
                         }
-                        if (Resultante.Desapila != "") 
+                        if (Resultante.Desapila != " ") 
                         {
                             string letra = Pila.Pop();
-                            if (Resultante.Desapila != letra) 
+                            if (Resultante.Desapila != letra)
                             {
                                 Pila.Push(letra);
                             }
@@ -105,23 +105,22 @@ namespace AutomatasPilaProyecto
                     }
                     else 
                     {
-                        Nodos ResultanteVacio = ReglasAceptadas.Find(x => x.Lectura.Contains(""));
+                        Nodos ResultanteVacio = ReglasAceptadas.Find(x => x.Lectura.Contains(" "));
                         if (ResultanteVacio != null)
                         {
-                            if (Resultante.Apila != "")
+                            if (ResultanteVacio.Apila != " ")
                             {
-                                Pila.Push(Resultante.Apila);
+                                Pila.Push(ResultanteVacio.Apila);
                             }
-                            if (Resultante.Desapila != "")
+                            if (ResultanteVacio.Desapila != " ")
                             {
                                 string letra = Pila.Pop();
-                                if (Resultante.Desapila != letra)
+                                if (ResultanteVacio.Desapila != letra)
                                 {
                                     Pila.Push(letra);
                                 }
                             }
-                            IndiceCinta++;
-                            IndiceEstado = Convert.ToInt32(Resultante.EstadoTermina);
+                            IndiceEstado = Convert.ToInt32(ResultanteVacio.EstadoTermina);
                         }
                         else 
                         {
