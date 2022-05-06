@@ -100,16 +100,23 @@ namespace AutomatasPilaProyecto
             char[] CintaEntrada = cadena.ToArray();
             string[] EstadosFinales = TextoSeparado[2].Split(",");
             int p = Pila.Count;
-            string CadenaEstados;
-
+            string CadenaEstados="";
+            
             while (IndiceCinta<CintaEntrada.Length)
             {
+                CadenaEstados = "";
                 Configuraciones Nuevo= new Configuraciones(); 
                 string Aux = CintaEntrada[IndiceCinta].ToString();
                 string Estado = IndicadorEstados[IndiceEstado-1];
                 List<Nodos> ReglasAceptadas = Reglas.FindAll(x => x.EstadoInicia.Contains(Estado));
                 Nuevo.Estado = Estado;
-
+                int a = 0;
+                for (int i = IndiceCinta; i < CintaEntrada.Length; i++)
+                {
+                    CadenaEstados += CintaEntrada[i].ToString();
+                    a++;
+                }
+                Nuevo.Cadena = CadenaEstados;
                 if (ReglasAceptadas.Count != 0)
                 {
                     Nodos Resultante = ReglasAceptadas.Find(x => x.Lectura.Contains(Aux));
@@ -177,6 +184,7 @@ namespace AutomatasPilaProyecto
                             //Automata mal ingresado
                         }
                     }
+                    ListaConfig.Add(Nuevo);
                 }
                 else 
                 {

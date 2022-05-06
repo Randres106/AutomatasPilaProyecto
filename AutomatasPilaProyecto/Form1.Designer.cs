@@ -110,11 +110,11 @@ namespace AutomatasPilaProyecto
             // dataGridView1
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(481, 145);
+            this.dataGridView1.Location = new System.Drawing.Point(417, 139);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 62;
             this.dataGridView1.RowTemplate.Height = 33;
-            this.dataGridView1.Size = new System.Drawing.Size(445, 217);
+            this.dataGridView1.Size = new System.Drawing.Size(572, 217);
             this.dataGridView1.TabIndex = 8;
             // 
             // Form1
