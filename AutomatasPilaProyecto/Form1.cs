@@ -48,7 +48,7 @@ namespace AutomatasPilaProyecto
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Stack<String> Pila = new Stack<string>();
+            Stack<string> Pila = new Stack<string>();
             List<string> Estados = new List<string>();
             List<Nodos> Reglas = new List<Nodos>();
 
@@ -81,7 +81,59 @@ namespace AutomatasPilaProyecto
             while (IndiceCinta<CintaEntrada.Length)
             {
                 string Aux = CintaEntrada[IndiceCinta].ToString();
-                
+                string Estado = IndicadorEstados[IndiceEstado-1];
+                List<Nodos> ReglasAceptadas = Reglas.FindAll(x => x.EstadoInicia.Contains(Estado));
+                if (ReglasAceptadas.Count != 0)
+                {
+                    Nodos Resultante = ReglasAceptadas.Find(x => x.Lectura.Contains(Aux));
+                    if (Resultante != null)
+                    {
+                        if (Resultante.Apila != "")
+                        {
+                            Pila.Push(Resultante.Apila);
+                        }
+                        if (Resultante.Desapila != "") 
+                        {
+                            string letra = Pila.Pop();
+                            if (Resultante.Desapila != letra) 
+                            {
+                                Pila.Push(letra);
+                            }
+                        }
+                        IndiceCinta++;
+                        IndiceEstado = Convert.ToInt32(Resultante.EstadoTermina);
+                    }
+                    else 
+                    {
+                        Nodos ResultanteVacio = ReglasAceptadas.Find(x => x.Lectura.Contains(""));
+                        if (ResultanteVacio != null)
+                        {
+                            if (Resultante.Apila != "")
+                            {
+                                Pila.Push(Resultante.Apila);
+                            }
+                            if (Resultante.Desapila != "")
+                            {
+                                string letra = Pila.Pop();
+                                if (Resultante.Desapila != letra)
+                                {
+                                    Pila.Push(letra);
+                                }
+                            }
+                            IndiceCinta++;
+                            IndiceEstado = Convert.ToInt32(Resultante.EstadoTermina);
+                        }
+                        else 
+                        {
+                            //Automata mal ingresado
+                        }
+                    }
+                }
+                else 
+                {
+                    //Automata mal ingresado
+                }
+
             }
             //verifica si ya puede salir
             if (Pila.Count==0)
