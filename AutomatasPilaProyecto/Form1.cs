@@ -33,6 +33,7 @@ namespace AutomatasPilaProyecto
 
                 TextoCompleto = TbArchivo.Text;
                 TextoSeparado = TextoCompleto.Split("\r\n");
+                label4.Text = "";
             }
 
         }
@@ -53,13 +54,15 @@ namespace AutomatasPilaProyecto
             List<string> CadEstados = new List<string>();
             List<Nodos> Reglas = new List<Nodos>();
             List<Configuraciones> ListaConfig = new List<Configuraciones>();
-
+            List<string> Alfabeto = new List<string>();
             int IndiceEstado = 0;
             int IndiceCinta = 0;
             string TextoTxT = TbArchivo.Text;
             string cadena = textBox1.Text;
             string[] TextoSeparado = TextoTxT.Split("\r\n");
             IndiceEstado = Convert.ToInt32(TextoSeparado[1]);
+            dataGridView1.DataSource = default;
+            label4.Text = "";
             bool ParImpar = false;
             if ((cadena.Length % 2) == 0)
             {
@@ -103,142 +106,181 @@ namespace AutomatasPilaProyecto
             string CadenaEstados="";
             string CadenaPilas = "";
             bool NoTerminaCadena = false;
+            string alfa = "";
             
-            while (IndiceCinta<CintaEntrada.Length)
+            for (int i = 0; i < Reglas.Count; i++)
             {
-                CadenaEstados = "";
-                CadenaPilas = "";
-                Configuraciones Nuevo= new Configuraciones(); 
-                string Aux = CintaEntrada[IndiceCinta].ToString();
-                string Estado = IndicadorEstados[IndiceEstado-1];
-                List<Nodos> ReglasAceptadas = Reglas.FindAll(x => x.EstadoInicia.Contains(Estado));
-                Nuevo.Estado = Estado;
-                int a = 0;
-                for (int i = IndiceCinta; i < CintaEntrada.Length; i++)
+                Alfabeto.Add(Reglas[i].Apila);
+                Alfabeto.Add(Reglas[i].Desapila);
+                Alfabeto.Add(Reglas[i].Lectura);
+            }
+            string[] NuevoAlfabeto=Alfabeto.Distinct().ToArray();
+
+            List<string> ListaBool = new List<string>();
+            for (int i = 0; i < CintaEntrada.Count(); i++)
+            {
+                string a = Alfabeto.Find(x => x.Contains(CintaEntrada[i].ToString()));
+                if (a!=null)
                 {
-                    CadenaEstados += CintaEntrada[i].ToString();
-                    a++;
+                    ListaBool.Add("false");
                 }
-                Nuevo.Cadena = CadenaEstados;
-                if (ReglasAceptadas.Count != 0)
+                else
                 {
-                    Nodos Resultante = ReglasAceptadas.Find(x => x.Lectura.Contains(Aux));
-                    if (CintaEntrada.Length/2==IndiceCinta)
+                    ListaBool.Add("true");
+                }
+            }
+
+            string NewAlfa = ListaBool.Find(x => x.Contains("true"));
+            if (NewAlfa!="true")
+            {
+                while (IndiceCinta < CintaEntrada.Length)
+                {
+                    CadenaEstados = "";
+                    CadenaPilas = "";
+                    Configuraciones Nuevo = new Configuraciones();
+                    string Aux = CintaEntrada[IndiceCinta].ToString();
+                    string Estado = IndicadorEstados[IndiceEstado - 1];
+                    List<Nodos> ReglasAceptadas = Reglas.FindAll(x => x.EstadoInicia.Contains(Estado));
+                    Nuevo.Estado = Estado;
+                    int a = 0;
+                    for (int i = IndiceCinta; i < CintaEntrada.Length; i++)
                     {
-                        Nodos Mitad = ReglasAceptadas.Find(x => x.Lectura.Contains(" "));
-                        if (Mitad != null)
-                        {
-                            Resultante = Mitad;
-                            IndiceCinta--;
-                        }
+                        CadenaEstados += CintaEntrada[i].ToString();
+                        a++;
                     }
-                    if (Resultante != null)
+                    Nuevo.Cadena = CadenaEstados;
+                    if (ReglasAceptadas.Count != 0)
                     {
-                        if (Resultante.Desapila != " ") 
+                        Nodos Resultante = ReglasAceptadas.Find(x => x.Lectura.Contains(Aux));
+                        if (CintaEntrada.Length / 2 == IndiceCinta)
                         {
-                            if (Pila.Count!=0)
+                            Nodos Mitad = ReglasAceptadas.Find(x => x.Lectura.Contains(" "));
+                            if (Mitad != null)
                             {
-                                string letra = Pila.Pop();
-                                if (Resultante.Desapila != letra)
+                                Resultante = Mitad;
+                                IndiceCinta--;
+                            }
+                        }
+                        if (Resultante != null)
+                        {
+                            if (Resultante.Desapila != " ")
+                            {
+                                if (Pila.Count != 0)
                                 {
-                                    Pila.Push(letra);
-                                    Nodos AuxReglas = ReglasAceptadas.Find(x => x.Desapila.Contains(letra));
-                                    Resultante = AuxReglas;
-                                    if (Resultante.Desapila == letra)
+                                    string letra = Pila.Pop();
+                                    if (Resultante.Desapila != letra)
                                     {
-                                        Pila.Pop();
+                                        Pila.Push(letra);
+                                        Nodos AuxReglas = ReglasAceptadas.Find(x => x.Desapila.Contains(letra));
+                                        Resultante = AuxReglas;
+                                        if (Resultante.Desapila == letra)
+                                        {
+                                            Pila.Pop();
+                                        }
                                     }
                                 }
+                                else
+                                {
+                                    IndiceCinta = CintaEntrada.Length;
+                                    NoTerminaCadena = true;
+                                }
+
+                            }
+                            if (Resultante.Apila != " ")
+                            {
+                                Pila.Push(Resultante.Apila);
+                            }
+                            IndiceCinta++;
+                            IndiceEstado = Convert.ToInt32(Resultante.EstadoTermina);
+                            string[] CadPila = Pila.ToArray();
+                            for (int i = 0; i < CadPila.Length; i++)
+                            {
+                                CadenaPilas += CadPila[i];
+                            }
+                            Nuevo.Pila = CadenaPilas;
+                        }
+                        else
+                        {
+                            Nodos ResultanteVacio = ReglasAceptadas.Find(x => x.Lectura.Contains(" "));
+                            if (ResultanteVacio != null)
+                            {
+                                if (ResultanteVacio.Apila != " ")
+                                {
+                                    Pila.Push(ResultanteVacio.Apila);
+                                }
+                                if (ResultanteVacio.Desapila != " ")
+                                {
+                                    string letra = Pila.Pop();
+                                    if (ResultanteVacio.Desapila != letra)
+                                    {
+                                        Pila.Push(letra);
+                                    }
+                                }
+                                IndiceEstado = Convert.ToInt32(ResultanteVacio.EstadoTermina);
                             }
                             else
                             {
-                                IndiceCinta = CintaEntrada.Length;
-                                NoTerminaCadena = true;
-                            }
-                            
-                        }
-                        if (Resultante.Apila != " ")
-                        {
-                            Pila.Push(Resultante.Apila);
-                        }
-                        IndiceCinta++;
-                        IndiceEstado = Convert.ToInt32(Resultante.EstadoTermina);
-                        string[] CadPila = Pila.ToArray();
-                        for (int i = 0; i < CadPila.Length; i++)
-                        {
-                            CadenaPilas += CadPila[i];
-                        }
-                        Nuevo.Pila = CadenaPilas;
-                    }
-                    else 
-                    {
-                        Nodos ResultanteVacio = ReglasAceptadas.Find(x => x.Lectura.Contains(" "));
-                        if (ResultanteVacio != null)
-                        {
-                            if (ResultanteVacio.Apila != " ")
-                            {
-                                Pila.Push(ResultanteVacio.Apila);
-                            }
-                            if (ResultanteVacio.Desapila != " ")
-                            {
-                                string letra = Pila.Pop();
-                                if (ResultanteVacio.Desapila != letra)
-                                {
-                                    Pila.Push(letra);
-                                }
-                            }
-                            IndiceEstado = Convert.ToInt32(ResultanteVacio.EstadoTermina);
-                        }
-                        else 
-                        {
-                            //Automata mal ingresado
-                        }
-                    }
-                    ListaConfig.Add(Nuevo);
-                }
-                else 
-                {
-                    //Automata mal ingresado
-                }
+                                label4.Text = "AUTOMATA MAL INGRESADO!!!!";
 
-            }
-            //verifica si ya puede salir
-            if (!NoTerminaCadena)
-            {
-                if (Pila.Count == 0)
-                {
-                    bool verificar = false;
-                    for (int i = 0; i < EstadosFinales.Length; i++)
-                    {
-                        if (EstadosFinales[i] == IndiceEstado.ToString())
-                        {
-                            verificar = true;
-                            i = EstadosFinales.Length;
+                            }
                         }
-                    }
-                    if (verificar)
-                    {
-                        //si lo acepta
-                        dataGridView1.DataSource = null;
-                        for (int i = 1; i <= ListaConfig.Count-1; i++)
-                        {
-                            string Aux = ListaConfig[ListaConfig.Count-1-i].Pila;
-                            ListaConfig[ListaConfig.Count-i].Pila = Aux;
-                        }
-                        ListaConfig[0].Pila = "ε";
-                        dataGridView1.DataSource = ListaConfig;
-                        
+                        ListaConfig.Add(Nuevo);
                     }
                     else
                     {
-                        //nachos
+                        label4.Text = "AUTOMATA MAL INGRESADO!!!!";
                     }
+
+                }
+
+                //verifica si ya puede salir
+                if (!NoTerminaCadena)
+                {
+                    if (Pila.Count == 0)
+                    {
+                        bool verificar = false;
+                        for (int i = 0; i < EstadosFinales.Length; i++)
+                        {
+                            if (EstadosFinales[i] == IndiceEstado.ToString())
+                            {
+                                verificar = true;
+                                i = EstadosFinales.Length;
+                            }
+                        }
+                        if (verificar)
+                        {
+
+                            dataGridView1.DataSource = null;
+                            for (int i = 1; i <= ListaConfig.Count - 1; i++)
+                            {
+                                string Aux = ListaConfig[ListaConfig.Count - 1 - i].Pila;
+                                ListaConfig[ListaConfig.Count - i].Pila = Aux;
+                            }
+                            ListaConfig[0].Pila = "ε";
+                            dataGridView1.DataSource = null;
+                            dataGridView1.DataSource = ListaConfig;
+                            label4.Text = "SI ACEPTA EL AUTOMATA DE PILA!!!!!";
+                        }
+                        else
+                        {
+                            label4.Text = "NO LO ACEPTA, NO TERMINA EN UN ESTADO FINAL!!!!";
+                        }
+                    }
+                    else
+                    {
+                        label4.Text = "NO LO ACEPTA, NO TERMINA LA PILA!!!!";
+                    }
+                }
+                else
+                {
+                    label4.Text = "NO LO ACEPTA, NO TERMINA LA CADENA!!!!";
                 }
             }
             else
             {
-                //no termina la cadena
+                label4.Text = "UNA LETRA MAL INGRESADA O FUERA DEL ALFABETO!!!!";
             }
+            
         }
     }
 
