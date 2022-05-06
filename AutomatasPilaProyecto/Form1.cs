@@ -101,10 +101,13 @@ namespace AutomatasPilaProyecto
             string[] EstadosFinales = TextoSeparado[2].Split(",");
             int p = Pila.Count;
             string CadenaEstados="";
+            string CadenaPilas = "";
+            bool NoTerminaCadena = false;
             
             while (IndiceCinta<CintaEntrada.Length)
             {
                 CadenaEstados = "";
+                CadenaPilas = "";
                 Configuraciones Nuevo= new Configuraciones(); 
                 string Aux = CintaEntrada[IndiceCinta].ToString();
                 string Estado = IndicadorEstados[IndiceEstado-1];
@@ -150,6 +153,7 @@ namespace AutomatasPilaProyecto
                             else
                             {
                                 IndiceCinta = CintaEntrada.Length;
+                                NoTerminaCadena = true;
                             }
                             
                         }
@@ -159,6 +163,12 @@ namespace AutomatasPilaProyecto
                         }
                         IndiceCinta++;
                         IndiceEstado = Convert.ToInt32(Resultante.EstadoTermina);
+                        string[] CadPila = Pila.ToArray();
+                        for (int i = 0; i < CadPila.Length; i++)
+                        {
+                            CadenaPilas += CadPila[i];
+                        }
+                        Nuevo.Pila = CadenaPilas;
                     }
                     else 
                     {
@@ -193,27 +203,41 @@ namespace AutomatasPilaProyecto
 
             }
             //verifica si ya puede salir
-            if (Pila.Count==0)
+            if (!NoTerminaCadena)
             {
-                bool verificar = false;
-                for (int i = 0; i < EstadosFinales.Length; i++)
+                if (Pila.Count == 0)
                 {
-                    if (EstadosFinales[i]==IndiceEstado.ToString())
+                    bool verificar = false;
+                    for (int i = 0; i < EstadosFinales.Length; i++)
                     {
-                        verificar = true;
-                        i = EstadosFinales.Length;
+                        if (EstadosFinales[i] == IndiceEstado.ToString())
+                        {
+                            verificar = true;
+                            i = EstadosFinales.Length;
+                        }
+                    }
+                    if (verificar)
+                    {
+                        //si lo acepta
+                        dataGridView1.DataSource = null;
+                        for (int i = 1; i <= ListaConfig.Count-1; i++)
+                        {
+                            string Aux = ListaConfig[ListaConfig.Count-1-i].Pila;
+                            ListaConfig[ListaConfig.Count-i].Pila = Aux;
+                        }
+                        ListaConfig[0].Pila = "ε";
+                        dataGridView1.DataSource = ListaConfig;
+                        
+                    }
+                    else
+                    {
+                        //nachos
                     }
                 }
-                if (verificar)
-                {
-                    //si lo acepta
-                    dataGridView1.DataSource = null;
-                    dataGridView1.DataSource = ListaConfig;
-                }
-                else
-                {
-                    //nachos
-                }
+            }
+            else
+            {
+                //no termina la cadena
             }
         }
     }
