@@ -65,7 +65,18 @@ namespace AutomatasPilaProyecto
                 string[] Temporal = TextoSeparado[i].Split(",");
                 Estados.Add(Temporal[0]);
                 Estados.Add(Temporal[4]);
-
+                if (Temporal[1]=="")
+                {
+                    Temporal[1] = " ";
+                }
+                if (Temporal[2] == "")
+                {
+                    Temporal[2] = " ";
+                }
+                if (Temporal[3] == "")
+                {
+                    Temporal[3] = " ";
+                }
                 Nuevo.EstadoInicia = Temporal[0];
                 Nuevo.Lectura = Temporal[1];
                 Nuevo.Desapila = Temporal[2];
@@ -88,17 +99,23 @@ namespace AutomatasPilaProyecto
                     Nodos Resultante = ReglasAceptadas.Find(x => x.Lectura.Contains(Aux));
                     if (Resultante != null)
                     {
-                        if (Resultante.Apila != " ")
-                        {
-                            Pila.Push(Resultante.Apila);
-                        }
                         if (Resultante.Desapila != " ") 
                         {
                             string letra = Pila.Pop();
                             if (Resultante.Desapila != letra)
                             {
                                 Pila.Push(letra);
+                                Nodos AuxReglas = ReglasAceptadas.Find(x => x.Desapila.Contains(letra));
+                                Resultante = AuxReglas;
+                                if (Resultante.Desapila == letra)
+                                {
+                                    Pila.Pop();
+                                }
                             }
+                        }
+                        if (Resultante.Apila != " ")
+                        {
+                            Pila.Push(Resultante.Apila);
                         }
                         IndiceCinta++;
                         IndiceEstado = Convert.ToInt32(Resultante.EstadoTermina);
