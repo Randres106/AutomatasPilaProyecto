@@ -50,7 +50,9 @@ namespace AutomatasPilaProyecto
         {
             Stack<string> Pila = new Stack<string>();
             List<string> Estados = new List<string>();
+            List<string> CadEstados = new List<string>();
             List<Nodos> Reglas = new List<Nodos>();
+            List<Configuraciones> ListaConfig = new List<Configuraciones>();
 
             int IndiceEstado = 0;
             int IndiceCinta = 0;
@@ -58,6 +60,15 @@ namespace AutomatasPilaProyecto
             string cadena = textBox1.Text;
             string[] TextoSeparado = TextoTxT.Split("\r\n");
             IndiceEstado = Convert.ToInt32(TextoSeparado[1]);
+            bool ParImpar = false;
+            if ((cadena.Length % 2) == 0)
+            {
+                ParImpar = true;
+            }
+            else
+            {
+                ParImpar = false;
+            }
 
             for (int i = 3; i < TextoSeparado.Length; i++)
             {
@@ -89,29 +100,51 @@ namespace AutomatasPilaProyecto
             char[] CintaEntrada = cadena.ToArray();
             string[] EstadosFinales = TextoSeparado[2].Split(",");
             int p = Pila.Count;
+            string CadenaEstados;
+
             while (IndiceCinta<CintaEntrada.Length)
             {
+                Configuraciones Nuevo= new Configuraciones(); 
                 string Aux = CintaEntrada[IndiceCinta].ToString();
                 string Estado = IndicadorEstados[IndiceEstado-1];
                 List<Nodos> ReglasAceptadas = Reglas.FindAll(x => x.EstadoInicia.Contains(Estado));
+                Nuevo.Estado = Estado;
+
                 if (ReglasAceptadas.Count != 0)
                 {
                     Nodos Resultante = ReglasAceptadas.Find(x => x.Lectura.Contains(Aux));
+                    if (CintaEntrada.Length/2==IndiceCinta)
+                    {
+                        Nodos Mitad = ReglasAceptadas.Find(x => x.Lectura.Contains(" "));
+                        if (Mitad != null)
+                        {
+                            Resultante = Mitad;
+                            IndiceCinta--;
+                        }
+                    }
                     if (Resultante != null)
                     {
                         if (Resultante.Desapila != " ") 
                         {
-                            string letra = Pila.Pop();
-                            if (Resultante.Desapila != letra)
+                            if (Pila.Count!=0)
                             {
-                                Pila.Push(letra);
-                                Nodos AuxReglas = ReglasAceptadas.Find(x => x.Desapila.Contains(letra));
-                                Resultante = AuxReglas;
-                                if (Resultante.Desapila == letra)
+                                string letra = Pila.Pop();
+                                if (Resultante.Desapila != letra)
                                 {
-                                    Pila.Pop();
+                                    Pila.Push(letra);
+                                    Nodos AuxReglas = ReglasAceptadas.Find(x => x.Desapila.Contains(letra));
+                                    Resultante = AuxReglas;
+                                    if (Resultante.Desapila == letra)
+                                    {
+                                        Pila.Pop();
+                                    }
                                 }
                             }
+                            else
+                            {
+                                IndiceCinta = CintaEntrada.Length;
+                            }
+                            
                         }
                         if (Resultante.Apila != " ")
                         {
@@ -166,6 +199,8 @@ namespace AutomatasPilaProyecto
                 if (verificar)
                 {
                     //si lo acepta
+                    dataGridView1.DataSource = null;
+                    dataGridView1.DataSource = ListaConfig;
                 }
                 else
                 {
@@ -182,6 +217,14 @@ namespace AutomatasPilaProyecto
         public string Apila { get; set; }
         public string EstadoInicia{ get; set; }
         public string EstadoTermina { get; set; }
+
+    }
+
+    public class Configuraciones
+    {
+        public string Estado { get; set; }
+        public string Cadena { get; set; }
+        public string Pila { get; set; }
 
     }
 }
